@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# user uploads (ID proofs and selfies are personal data)
+backend/uploads/ids/*
+backend/uploads/selfies/*
+!backend/uploads/ids/.gitkeep
+!backend/uploads/selfies/.gitkeep

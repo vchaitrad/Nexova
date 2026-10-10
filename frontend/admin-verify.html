@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Verify Users | Nexova</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+    body { background: #FAF8F6; }
+    .navbar { background: #1B2A4A; padding: 14px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(27,42,74,0.15); }
+    .navbar .logo { width: 38px; height: 38px; background: #C4A882; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #fff; font-weight: 700; }
+    .navbar h1 { font-family: 'Cormorant Garamond', serif; color: #fff; font-size: 22px; font-weight: 700; }
+    .navbar a { margin-left: auto; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; padding: 6px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); }
+    .navbar a:hover { color: #fff; border-color: #C4A882; }
+
+    .lang-bar { background: #fff; border-bottom: 2px solid rgba(27,42,74,0.08); padding: 10px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .lang-btn { padding: 7px 14px; border-radius: 20px; border: 2px solid rgba(27,42,74,0.12); background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; color: #4A5F85; transition: all 0.15s; }
+    .lang-btn.active { background: #1B2A4A; color: #fff; border-color: #1B2A4A; }
+
+    .page { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(27,42,74,0.06); border: 1px solid rgba(27,42,74,0.06); }
+    .empty { text-align: center; padding: 40px 0; color: #8B9BB5; font-size: 14px; }
+    .empty .big-icon { font-size: 48px; display: block; margin-bottom: 8px; }
+
+    .user-card { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(27,42,74,0.06); }
+    .user-card:last-child { border-bottom: none; }
+
+    .user-avatar { width: 48px; height: 48px; border-radius: 50%; background: #1B2A4A; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; flex-shrink: 0; }
+    .user-avatar img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 15px; font-weight: 700; color: #1B2A4A; }
+    .user-email { font-size: 12px; color: #4A5F85; margin-top: 2px; }
+    .user-meta { font-size: 11px; color: #8B9BB5; margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+    .badge.done { background: #E8F5E9; color: #2E7D32; }
+    .badge.miss { background: #F5F5F5; color: #9E9E9E; }
+
+    .actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-approve { padding: 8px 16px; border-radius: 8px; border: none; background: #2E7D32; color: #fff; font-weight: 600; font-size: 12px; cursor: pointer; }
+    .btn-reject { padding: 8px 16px; border-radius: 8px; border: none; background: #DC2626; color: #fff; font-weight: 600; font-size: 12px; cursor: pointer; }
+    .btn-approve:hover { background: #1B5E20; }
+    .btn-reject:hover { background: #B91C1C; }
+    .btn-approve:disabled, .btn-reject:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1B2A4A; color: #fff; padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; display: none; align-items: center; gap: 8px; z-index: 999; box-shadow: 0 4px 20px rgba(27,42,74,0.2); }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="logo">∞</div>
+  <h1>Nexova Admin</h1>
+  <a href="/profile.html">← Back to Profile</a>
+</div>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('en')">English</button>
+  <button class="lang-btn" onclick="setLang('hi')">हिंदी</button>
+  <button class="lang-btn" onclick="setLang('kn')">ಕನ್ನಡ</button>
+  <button class="lang-btn" onclick="setLang('te')">తెలుగు</button>
+  <button class="lang-btn" onclick="setLang('ta')">தமிழ்</button>
+  <button class="lang-btn" onclick="setLang('mr')">मराठी</button>
+</div>
+
+<div class="page">
+  <div class="card" id="mainCard">
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#1B2A4A;margin-bottom:4px" id="title">🛡️ Verify Users</h2>
+    <p style="font-size:13px;color:#4A5F85;margin-bottom:12px" id="subtitle">Review and verify user verification requests</p>
+    <div id="loginPrompt" style="display:none;text-align:center;padding:24px">
+      <p style="font-size:16px;color:#1B2A4A;font-weight:600;margin-bottom:8px" id="loginMsg">⚠️ Please login as a recruiter to verify users</p>
+      <a href="/login" style="display:inline-block;padding:10px 24px;background:#1B2A4A;color:#fff;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px">Login</a>
+    </div>
+    <div id="userList"></div>
+    <div id="loadingState" class="empty"><span class="big-icon">⏳</span><span id="loadingText">Loading pending users...</span></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span>✅</span><span id="toastMsg"></span></div>
+
+<script>
+const API = '/api';
+const token = localStorage.getItem('token');
+let user = JSON.parse(localStorage.getItem('user') || 'null');
+let currentLang = 'en';
+
+const LANG = {
+  en: { title:'🛡️ Verify Users', subtitle:'Review and verify user verification requests', loginMsg:'⚠️ Please login as a recruiter to verify users', loading:'Loading pending users...', noPending:'👍 No pending verification requests', name:'Name', email:'Email', joined:'Joined', selfie:'Selfie', idProof:'ID Proof', approve:'Approve', reject:'Reject', approved:'✅ User verified!', rejected:'❌ User rejected!', error:'Failed to load users', actionError:'Action failed', loginTo:'Login', selfieYes:'🤳 Yes', selfieNo:'🤳 No', idYes:'🪪 Yes', idNo:'🪪 No' },
+  hi: { title:'🛡️ उपयोगकर्ता सत्यापित करें', subtitle:'उपयोगकर्ता सत्यापन अनुरोधों की समीक्षा करें', loginMsg:'⚠️ कृपया सत्यापन के लिए रिक्रूटर के रूप में लॉगिन करें', loading:'लंबित उपयोगकर्ता लोड हो रहे हैं...', noPending:'👍 कोई लंबित सत्यापन अनुरोध नहीं', approve:'मंज़ूर', reject:'अस्वीकार', approved:'✅ उपयोगकर्ता सत्यापित!', rejected:'❌ उपयोगकर्ता अस्वीकृत!', error:'उपयोगकर्ता लोड करने में विफल', actionError:'कार्रवाई विफल', loginTo:'लॉगिन करें' },
+  kn: { title:'🛡️ ಬಳಕೆದಾರರನ್ನು ಪರಿಶೀಲಿಸಿ', subtitle:'ಬಳಕೆದಾರರ ಪರಿಶೀಲನೆ ವಿನಂತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ', loginMsg:'⚠️ ಪರಿಶೀಲಿಸಲು ದಯವಿಟ್ಟು ರಿಕ್ರೂಟರ್ ಆಗಿ ಲಾಗಿನ್ ಮಾಡಿ', loading:'ಬಾಕಿ ಇರುವ ಬಳಕೆದಾರರನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...', noPending:'👍 ಯಾವುದೇ ಬಾಕಿ ಪರಿಶೀಲನೆ ವಿನಂತಿಗಳಿಲ್ಲ', approve:'ಅನುಮೋದಿಸಿ', reject:'ತಿರಸ್ಕರಿಸಿ', approved:'✅ ಬಳಕೆದಾರ ಪರಿಶೀಲಿಸಲಾಗಿದೆ!', rejected:'❌ ಬಳಕೆದಾರ ತಿರಸ್ಕರಿಸಲಾಗಿದೆ!', error:'ಬಳಕೆದಾರರನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ', actionError:'ಕ್ರಿಯೆ ವಿಫಲವಾಗಿದೆ', loginTo:'ಲಾಗಿನ್ ಮಾಡಿ' },
+  te: { title:'🛡️ వినియోగదారులను ధృవీకరించండి', subtitle:'వినియోగదారుల ధృవీకరణ అభ్యర్థనలను సమీక్షించండి', loginMsg:'⚠️ దయచేసి ధృవీకరించడానికి రిక్రూటర్‌గా లాగిన్ చేయండి', loading:'పెండింగ్ వినియోగదారులను లోడ్ చేస్తోంది...', noPending:'👍 ఎటువంటి పెండింగ్ ధృవీకరణ అభ్యర్థనలు లేవు', approve:'ఆమోదించు', reject:'తిరస్కరించు', approved:'✅ వినియోగదారు ధృవీకరించబడ్డారు!', rejected:'❌ వినియోగదారు తిరస్కరించబడ్డారు!', error:'వినియోగదారులను లోడ్ చేయడంలో విఫలమైంది', actionError:'చర్య విఫలమైంది', loginTo:'లాగిన్ చేయండి' },
+  ta: { title:'🛡️ பயனர்களை சரிபார்க்கவும்', subtitle:'பயனர் சரிபார்ப்பு கோரிக்கைகளை மதிப்பாய்வு செய்யவும்', loginMsg:'⚠️ சரிபார்க்க ரிக்ரூட்டராக உள்நுழையவும்', loading:'நிலுவையில் உள்ள பயனர்களை ஏற்றுகிறது...', noPending:'👍 நிலுவையில் எந்த சரிபார்ப்பு கோரிக்கையும் இல்லை', approve:'அனுமதி', reject:'நிராகரி', approved:'✅ பயனர் சரிபார்க்கப்பட்டார்!', rejected:'❌ பயனர் நிராகரிக்கப்பட்டார்!', error:'பயனர்களை ஏற்ற முடியவில்லை', actionError:'செயல் தோல்வியடைந்தது', loginTo:'உள்நுழையவும்' },
+  mr: { title:'🛡️ वापरकर्त्यांना सत्यापित करा', subtitle:'वापरकर्त्यांच्या सत्यापन विनंत्यांचे पुनरावलोकन करा', loginMsg:'⚠️ कृपया सत्यापित करण्यासाठी रिक्रूटर म्हणून लॉगिन करा', loading:'प्रलंबित वापरकर्ते लोड करत आहे...', noPending:'👍 कोणत्याही प्रलंबित सत्यापन विनंत्या नाहीत', approve:'मंजूर', reject:'नकार', approved:'✅ वापरकर्ता सत्यापित!', rejected:'❌ वापरकर्ता नाकारला!', error:'वापरकर्ते लोड करण्यात अयशस्वी', actionError:'कृती अयशस्वी', loginTo:'लॉगिन करा' }
+};
+
+function t(key) { return (LANG[currentLang] || LANG.en)[key] || key; }
+
+function applyLang() {
+  ['title','subtitle','loginMsg','loadingText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(id);
+  });
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  applyLang();
+}
+
+async function loadPending() {
+  const list = document.getElementById('userList');
+  const loading = document.getElementById('loadingState');
+  const loginPrompt = document.getElementById('loginPrompt');
+
+  if (!token || !user || user.role === 'jobseeker') {
+    loading.style.display = 'none';
+    loginPrompt.style.display = 'block';
+    return;
+  }
+
+  loading.style.display = 'block';
+  try {
+    const res = await fetch(`${API}/auth/admin/pending-users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) {
+      if (res.status === 403) {
+        loading.innerHTML = `<div class="empty"><span class="big-icon">⚠️</span><p>${t('loginMsg')}</p></div>`;
+        return;
+      }
+      throw new Error('Failed');
+    }
+    const data = await res.json();
+    loading.style.display = 'none';
+    const users = data.users || [];
+    if (!users.length) {
+      list.innerHTML = `<div class="empty"><span class="big-icon">👍</span><p>${t('noPending')}</p></div>`;
+      return;
+    }
+    list.innerHTML = users.map(u => `
+      <div class="user-card" id="user-${u._id}">
+        <div class="user-avatar">${u.selfie ? `<img src="${u.selfie}" alt="selfie" />` : (u.name ? u.name[0].toUpperCase() : 'U')}</div>
+        <div class="user-info">
+          <div class="user-name">${u.name}</div>
+          <div class="user-email">${u.email}</div>
+          <div class="user-meta">
+            <span class="badge ${u.selfieVerified ? 'done' : 'miss'}">${u.selfieVerified ? '🤳 Yes' : '🤳 No'}</span>
+            <span class="badge ${u.idProof ? 'done' : 'miss'}">${u.idProof ? '🪪 Yes' : '🪪 No'}</span>
+            <span>📅 ${new Date(u.createdAt).toLocaleDateString()}</span>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn-approve" onclick="doVerify('${u._id}','verified')">✅ ${t('approve')}</button>
+          <button class="btn-reject" onclick="doVerify('${u._id}','rejected')">❌ ${t('reject')}</button>
+        </div>
+      </div>
+    `).join('');
+  } catch {
+    loading.innerHTML = `<div class="empty"><span class="big-icon">⚠️</span><p>${t('error')}</p></div>`;
+  }
+}
+
+async function doVerify(userId, status) {
+  const btns = document.querySelectorAll(`#user-${userId} .actions button`);
+  btns.forEach(b => b.disabled = true);
+  try {
+    const res = await fetch(`${API}/auth/admin/verify-user`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, status })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast(status === 'verified' ? t('approved') : t('rejected'));
+      document.getElementById(`user-${userId}`).remove();
+      const list = document.getElementById('userList');
+      if (!list.children.length) {
+        list.innerHTML = `<div class="empty"><span class="big-icon">👍</span><p>${t('noPending')}</p></div>`;
+      }
+    } else {
+      showToast('⚠️ ' + (data.error || t('actionError')));
+      btns.forEach(b => b.disabled = false);
+    }
+  } catch {
+    showToast('⚠️ ' + t('actionError'));
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.style.display = 'flex';
+  setTimeout(() => toast.style.display = 'none', 2500);
+}
+
+loadPending();
+</script>
+</body>
+</html>
